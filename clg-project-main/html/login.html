@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style1.css">
+    <title>login/register</title>
+</head>
+<body class="signin_body">
+    <div class="sign_in_container hider" id="register">
+        <h1 class="form-title">register</h1>
+        <form action="http://localhost:5000/api/register" method="POST" class="signin_form" id="registerForm">
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" placeholder="first name" name="firstName" id="fname" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                <input type="text" placeholder="last name" name="lastName" id="lname" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-envelope"></i>
+                <input type="email" placeholder="email" name="email" id="r_email" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" placeholder="password" name="password" id="r_password" required>
+            </div>
+            <input type="submit" class="btn" value="register">
+        </form>
+        
+        <div class="slinks">
+            <hr>
+            <p>already have an account ?</p>
+            <button class="login_page" id="login_page">login</button>
+        </div>
+    </div>
+
+    <div class="sign_in_container " id="signup"> 
+        <h1 class="form-title">sign in</h1>
+        <form action="http://localhost:5000/api/login" method="POST" class="signin_form" id="loginForm">
+            <div class="input-group">
+                <i class="fa fa-envelope"></i>
+                <input type="email" placeholder="email" name="email" id="s_email" required>
+            </div>
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                <input type="password" placeholder="password" name="password" id="s_password" required>
+                <p class="recover"><a href="#">forgot password</a></p>
+            </div>
+            <input type="submit" class="btn" value="sign in">
+        </form>
+        
+        <div class="slinks">
+            <hr>
+            <p>didn't have an account ?</p>
+            <button class="login_page" id="register_page">register</button>
+        </div>
+    </div>
+
+    <script>
+        const register = document.querySelector('#register');
+        const signup = document.querySelector('#signup');
+        const register_page = document.querySelector('#register_page');
+        const login_page = document.querySelector('#login_page');
+
+        register_page.onclick = () => {
+            signup.classList.toggle('hider');
+            register.classList.toggle('hider');
+        };
+
+        login_page.onclick = () => {
+            register.classList.toggle('hider');
+            signup.classList.toggle('hider');
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
+
+            registerForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(registerForm);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+                    alert(result.message);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Registration failed.');
+                }
+            });
+
+            loginForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(loginForm);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                try {
+                    const response = await fetch('http://localhost:5000/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+                    if (result.message === 'Login successful.') {
+                        window.location.href = 'welcome.html';
+                    } else {
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Login failed.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
